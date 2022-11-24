@@ -45,7 +45,7 @@ public class controller {
     }
 
     @GetMapping("/getSpotifyLoginUrl")
-    public ResponseEntity<?> SpotifyloginUrl(@RequestHeader String Authorization){
+    public ResponseEntity<?> SpotifyloginUrl(@RequestHeader(required = false) String Authorization){
         try {
             Usuario user = tkManager.IsAllowed(Authorization);
             String rs = spotifyAuth.getAuthUrl(user);

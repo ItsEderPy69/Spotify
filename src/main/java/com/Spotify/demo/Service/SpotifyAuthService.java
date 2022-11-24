@@ -14,7 +14,7 @@ public class SpotifyAuthService {
     public void save(SpotifyAuth data){
         spotifyAuthRepository.save(data);
     }
-
+    public void delete (SpotifyAuth data){spotifyAuthRepository.delete(data);}
     public void generatePCKE(Usuario user){
         if((user.getSpotifyAuth()==null)||(user.getSpotifyAuth().getCodeVerifier()==null)){
             SpotifyAuth data = new SpotifyAuth();
@@ -27,7 +27,13 @@ public class SpotifyAuthService {
         }
     }
     public SpotifyAuth get(String userID){
+        try{
         return spotifyAuthRepository.findById(userID).get();
+        }catch (Exception ex){
+            SpotifyAuth rs = new SpotifyAuth();
+            rs.setUserID(userID);
+            return rs;
+        }
     }
 
 }

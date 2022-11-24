@@ -1,15 +1,13 @@
 package com.Spotify.demo.SpotifyClient;
 
+import com.Spotify.demo.Exception.SpotifyException;
 import com.Spotify.demo.Repository.IUsuarioRepository;
 import com.Spotify.demo.Service.SpotifyAuthService;
 import com.Spotify.demo.Utilities.PkceUtil;
 import com.Spotify.demo.model.SpotifyAuth;
 import com.Spotify.demo.model.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -39,7 +37,7 @@ public class SpotifyAuthManager {
     private RestTemplate restTemplate;
     @Autowired
     private IUsuarioRepository usuarioRepository;
-    public HttpHeaders getAuth(Usuario _user){
+    public HttpHeaders getAuth(Usuario _user) throws SpotifyException {
         SpotifyAuth data = _user.getSpotifyAuth();
         if((data == null)||(data.getAccess_token()==null||data.getExpirationTokenDate().before(new Date(System.currentTimeMillis())))){
             refreshAuth(_user);
@@ -51,7 +49,7 @@ public class SpotifyAuthManager {
         return rs;
     }
 
-    private void refreshAuth(Usuario _user){
+    private void refreshAuth(Usuario _user) throws SpotifyException {
         //_user.setSpotifyAuth(generateAuth());
         SpotifyAuth data = spotifyAuthService.get(_user.getId());
         //if((data == null)||(data.getRefreshToken().isEmpty())){
@@ -116,7 +114,7 @@ public class SpotifyAuthManager {
 //                .grant_type("refresh_token")
 //                .refresh_token(refreshToken);
 //    }
-    public SpotifyAuth refreshAuthorizationToken(SpotifyAuth UserData){
+    public SpotifyAuth refreshAuthorizationToken(SpotifyAuth UserData) throws SpotifyException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -125,10 +123,15 @@ public class SpotifyAuthManager {
         map.add("client_id", CLIENT_ID);
         map.add("refresh_token", UserData.getRefresh_token());
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
-        ResponseEntity<SpotifyAuth> response = restTemplate.postForEntity(AUTH_URL, request, SpotifyAuth.class);
-        SpotifyAuth rsData = response.getBody();
-        UserData.setAccess_token(rsData.getAccess_token());
-        return UserData;
+        try {
+            ResponseEntity<SpotifyAuth> response = restTemplate.postForEntity(AUTH_URL, request, SpotifyAuth.class);
+            SpotifyAuth rsData = response.getBody();
+            UserData.setAccess_token(rsData.getAccess_token());
+            return UserData;
+        }catch (Exception ex){
+            spotifyAuthService.delete(UserData);
+            throw new SpotifyException("La sesión ha expirado, favor vuelva a iniciar a Spotify o intentelo de nuevo", HttpStatus.UNAUTHORIZED);
+        }
     }
 
 

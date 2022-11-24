@@ -20,13 +20,12 @@ public class UsuarioController {
     @Autowired
     private TokenManager tkManager;
 
-    @Autowired
-    private SpotifyDataService spotifyDataService;
+
 
     @Autowired
     private UsuarioService usuarioService;
     @PostMapping("/usuario")
-    public ResponseEntity<?> createUsuario(@RequestBody Usuario usuario, @RequestHeader String Authorization){
+    public ResponseEntity<?> createUsuario(@RequestBody Usuario usuario, @RequestHeader(required = false) String Authorization){
         try{
             tkManager.IsAllowed(Authorization);
             usuarioService.createUsuario(usuario);
@@ -37,13 +36,5 @@ public class UsuarioController {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @GetMapping("/me")
-    public ResponseEntity<?> me(@RequestHeader String Authorization){
-        try{
-            return new ResponseEntity<>(spotifyDataService.getMe(Authorization),HttpStatus.OK);
-        }
-        catch (SpotifyException ex){
-            return new ResponseEntity<>(ex.getMessage(),ex.getStatusCode());
-        }
-    }
+
 }

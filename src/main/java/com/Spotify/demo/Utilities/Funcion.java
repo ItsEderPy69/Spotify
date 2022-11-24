@@ -34,5 +34,13 @@ public class Funcion {
         return Base64.encodeBase64String(str.getBytes());
     }
 
+    public static boolean IsSearchQuery(String searchQuery, String[] possibleValues){
+        return false;
+    }
+
+        public static String fQuery(String str){
+        return (str.trim()).replace(" ", "+");
+    }
+
 
 }

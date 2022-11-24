@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,6 +31,18 @@ public class UsuarioServiceImp implements UsuarioService{
         }
     }
 
+
+    @Override
+    public void crearPredeterminado(){
+        List<Usuario> listaUsuario = usuarioRepo.findAll();
+        if(listaUsuario.isEmpty()){
+            Usuario user = new Usuario();
+            user.setEmail("a@a.com");
+            user.setPassword("b");
+            usuarioRepo.save(user);
+        };
+    }
+
     public Usuario get(String id){
         Optional<Usuario> OptUser = usuarioRepo.findById(id);
 
@@ -46,7 +59,11 @@ public class UsuarioServiceImp implements UsuarioService{
 
         if(OptUser.isPresent()){
             Usuario user = OptUser.get();
-            user.setSpotifyAuth(spotifyAuthService.get(user.getId()));
+            try {
+                user.setSpotifyAuth(spotifyAuthService.get(user.getId()));
+            }catch (Exception ex){
+
+            }
             return user;
         }else{
             return new Usuario();

@@ -5,4 +5,5 @@ import com.Spotify.demo.model.Usuario;
 
 public interface UsuarioService {
     void createUsuario(Usuario usuario) throws SpotifyException;
+    void crearPredeterminado() throws SpotifyException;
 }

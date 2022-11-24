@@ -11,22 +11,25 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class UserDataController {
+public class SpotifyDataController {
     @Autowired
     private SpotifyDataService spotifyDataService;
-    @GetMapping("/UserData/me")
-    public ResponseEntity<?> me(@RequestHeader String Authorization){
+    @GetMapping("/SpotifyData/search")
+    public ResponseEntity<?> search(@RequestHeader(required = false) String Authorization,
+                                    @RequestParam String value){
         try{
-            return new ResponseEntity<>(spotifyDataService.getMe(Authorization), HttpStatus.OK);
+            ResponseEntity<Object> rs = spotifyDataService.Search(Authorization, value);
+            return new ResponseEntity<>(rs.getBody(), rs.getStatusCode());
         }
         catch (SpotifyException ex){
             return new ResponseEntity<>(ex.getMessage(),ex.getStatusCode());
         }
     }
-    @GetMapping("/SpotifyData/me/album/guardados")
-    public ResponseEntity<?> getAlbum(@RequestHeader String Authorization){
+    @GetMapping("/SpotifyData/album")
+    public ResponseEntity<?> getAlbum(@RequestHeader(required = false) String Authorization,
+                                    @RequestParam String id){
         try{
-            ResponseEntity<Object> rs = spotifyDataService.getAlbumGuardados(Authorization);
+            ResponseEntity<Object> rs = spotifyDataService.getAlbum(Authorization, id);
             return new ResponseEntity<>(rs.getBody(), rs.getStatusCode());
         }
         catch (SpotifyException ex){

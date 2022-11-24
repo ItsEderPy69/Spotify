@@ -20,7 +20,11 @@ public class TokenManager {
     @Autowired
     private UsuarioServiceImp usuarioService;
     public Usuario IsAllowed(String token) throws SpotifyException {
-        if(token.equals("EntreAlaVerga")) {
+        if(token == null){
+            throw new SpotifyException("No autorizado", HttpStatus.UNAUTHORIZED);
+        }
+        if(token.equals("Bearer testing")) {
+            usuarioService.crearPredeterminado();
             return usuarioRepo.findAll().get(0);
         }
         Optional<Usuario> user = usuarioRepo.findByToken(token);

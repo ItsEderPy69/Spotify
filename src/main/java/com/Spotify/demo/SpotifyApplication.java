@@ -1,7 +1,10 @@
 package com.Spotify.demo;
 
+import com.Spotify.demo.Repository.IUsuarioRepository;
 import com.Spotify.demo.Security.TokenManager;
+import com.Spotify.demo.Service.UsuarioService;
 import com.Spotify.demo.model.Usuario;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +17,6 @@ import java.util.Map;
 
 @SpringBootApplication
 public class SpotifyApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(SpotifyApplication.class, args);
 	}
