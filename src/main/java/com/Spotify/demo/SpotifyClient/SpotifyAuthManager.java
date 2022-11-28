@@ -3,9 +3,14 @@ package com.Spotify.demo.SpotifyClient;
 import com.Spotify.demo.Exception.SpotifyException;
 import com.Spotify.demo.Repository.IUsuarioRepository;
 import com.Spotify.demo.Service.SpotifyAuthService;
+import com.Spotify.demo.Service.SpotifyDataService;
 import com.Spotify.demo.Utilities.PkceUtil;
 import com.Spotify.demo.model.SpotifyAuth;
 import com.Spotify.demo.model.Usuario;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -156,6 +161,5 @@ public class SpotifyAuthManager {
             throw new RuntimeException(e);
         }
     }
-
 
 }

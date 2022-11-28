@@ -16,10 +16,11 @@ public class SpotifyDataController {
     private SpotifyDataService spotifyDataService;
     @GetMapping("/SpotifyData/search")
     public ResponseEntity<?> search(@RequestHeader(required = false) String Authorization,
-                                    @RequestParam String value){
+                                    @RequestParam(required = false) String value){
         try{
-            ResponseEntity<Object> rs = spotifyDataService.Search(Authorization, value);
-            return new ResponseEntity<>(rs.getBody(), rs.getStatusCode());
+//            ResponseEntity<Object> rs = spotifyDataService.Search(Authorization, value);
+//            return new ResponseEntity<>(rs.getBody(), rs.getStatusCode());
+            return new ResponseEntity<>(spotifyDataService.Search(Authorization, value), HttpStatus.OK);
         }
         catch (SpotifyException ex){
             return new ResponseEntity<>(ex.getMessage(),ex.getStatusCode());
@@ -27,7 +28,7 @@ public class SpotifyDataController {
     }
     @GetMapping("/SpotifyData/album")
     public ResponseEntity<?> getAlbum(@RequestHeader(required = false) String Authorization,
-                                    @RequestParam String id){
+                                    @RequestParam(required = false) String id){
         try{
             ResponseEntity<Object> rs = spotifyDataService.getAlbum(Authorization, id);
             return new ResponseEntity<>(rs.getBody(), rs.getStatusCode());

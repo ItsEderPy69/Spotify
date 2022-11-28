@@ -1,7 +1,11 @@
 package com.Spotify.demo.controllers;
 
+import com.Spotify.demo.Exception.SpotifyException;
 import com.Spotify.demo.Repository.IUsuarioRepository;
 import com.Spotify.demo.Security.TokenManager;
+import com.Spotify.demo.Service.SpotifyAuthService;
+import com.Spotify.demo.SpotifyClient.SpotifyAuthManager;
+import com.Spotify.demo.model.SpotifyAuth;
 import com.Spotify.demo.model.Usuario;
 import com.Spotify.demo.model.UsuarioDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +22,10 @@ public class LoginController {
     private IUsuarioRepository usuario;
     @Autowired
     private TokenManager tkManager;
+    @Autowired
+    private SpotifyAuthManager spotifyAuth;
+    @Autowired
+    private SpotifyAuthService service;
     @PostMapping("/login")
     public ResponseEntity<?> createTodo(@RequestBody Usuario _user){
         try{
@@ -34,6 +42,29 @@ public class LoginController {
             return  new ResponseEntity<UsuarioDTO>(dto, HttpStatus.OK);
         }catch (Exception ex){
             return new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping("/login/getSpotifyLoginUrl")
+    public ResponseEntity<?> SpotifyloginUrl(@RequestHeader String Authorization){
+        try {
+            Usuario user = tkManager.IsAllowed(Authorization);
+            String rs = spotifyAuth.getAuthUrl(user);
+            return new ResponseEntity<>(rs, HttpStatus.OK);
+        }catch (SpotifyException ex){
+            return new ResponseEntity<>(ex.getMessage(), ex.getStatusCode());
+        }
+    }
+
+    @GetMapping("/login/getSpotifyToken")
+    public ResponseEntity<?> getSpotifyToken(@RequestHeader String Authorization){
+        try {
+            Usuario user = tkManager.IsAllowed(Authorization);
+            //String rs = spotifyAuth.getAuthUrl(user);
+            SpotifyAuth rs = service.get(user.getId());
+
+            return new ResponseEntity<>(rs, HttpStatus.OK);
+        }catch (SpotifyException ex){
+            return new ResponseEntity<>(ex.getMessage(), ex.getStatusCode());
         }
     }
 }
