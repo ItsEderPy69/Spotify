@@ -26,12 +26,13 @@ public class LoginController {
     private SpotifyAuthManager spotifyAuth;
     @Autowired
     private SpotifyAuthService service;
-    @PostMapping("/login")
+
+    @PostMapping(produces = { "application/json" }, value = "/login")
     public ResponseEntity<?> createTodo(@RequestBody Usuario _user){
         try{
             Optional<Usuario> user = usuario.findByEmailAndPassword(_user.getEmail(), _user.getPassword());
             if(!user.isPresent()){
-                throw new Exception("Credenciales incorrectas");
+                throw new SpotifyException("Credenciales incorrectas", HttpStatus.BAD_REQUEST);
             }else{
                 tkManager.generateToken(user.get());
                 user = usuario.findById(user.get().getId());
@@ -44,7 +45,7 @@ public class LoginController {
             return new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);
         }
     }
-    @GetMapping("/login/getSpotifyLoginUrl")
+    @GetMapping(produces = { "application/json" }, value ="/login/getSpotifyLoginUrl")
     public ResponseEntity<?> SpotifyloginUrl(@RequestHeader String Authorization){
         try {
             Usuario user = tkManager.IsAllowed(Authorization);
@@ -55,7 +56,7 @@ public class LoginController {
         }
     }
 
-    @GetMapping("/login/getSpotifyToken")
+    @GetMapping(produces = { "application/json" }, value ="/login/getSpotifyToken")
     public ResponseEntity<?> getSpotifyToken(@RequestHeader String Authorization){
         try {
             Usuario user = tkManager.IsAllowed(Authorization);

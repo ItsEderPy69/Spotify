@@ -25,7 +25,7 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
-    @PostMapping("/usuario")
+    @PostMapping(produces = { "application/json" }, value ="/usuario")
     public ResponseEntity<?> createUsuario(@RequestBody Usuario usuario, @RequestHeader(required = false) String Authorization){
         try{
             tkManager.IsAllowed(Authorization);

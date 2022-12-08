@@ -147,6 +147,7 @@ public class SpotifyAuthManager {
         if(!PendingAuth.contains(_user.getId())){
             PendingAuth.add(_user.getId());
         }
+        _user.setSpotifyAuth(spotifyAuthService.get(_user.getId()));//Para q se actualice
 
 
         try {

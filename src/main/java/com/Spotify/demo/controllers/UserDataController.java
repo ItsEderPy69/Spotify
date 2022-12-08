@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserDataController {
     @Autowired
     private SpotifyDataService spotifyDataService;
-    @GetMapping("/UserData/me")
+    @GetMapping(produces = { "application/json" }, value ="/UserData/me")
     public ResponseEntity<?> me(@RequestHeader String Authorization){
         try{
             return new ResponseEntity<>(spotifyDataService.getMe(Authorization), HttpStatus.OK);
@@ -22,7 +22,7 @@ public class UserDataController {
             return new ResponseEntity<>(ex.getMessage(),ex.getStatusCode());
         }
     }
-    @GetMapping("/UserData/me/album/guardados")
+    @GetMapping(produces = { "application/json" }, value ="/UserData/me/album/guardados")
     public ResponseEntity<?> getAlbum(@RequestHeader(required = false) String Authorization){
         try{
             ResponseEntity<Object> rs = spotifyDataService.getAlbumGuardados(Authorization);
@@ -32,7 +32,7 @@ public class UserDataController {
             return new ResponseEntity<>(ex.getMessage(),ex.getStatusCode());
         }
     }
-    @PostMapping("/UserData/me/playlist")
+    @PostMapping(produces = { "application/json" }, value ="/UserData/me/playlist")
     public ResponseEntity<?> createPlaylist(@RequestHeader(required = false)  String Authorization, @RequestBody CreatePlaylistRequest body){
         try{
             ResponseEntity<Object> rs = spotifyDataService.createPlaylist(Authorization, body);
@@ -42,7 +42,7 @@ public class UserDataController {
             return new ResponseEntity<>(ex.getMessage(),ex.getStatusCode());
         }
     }
-    @PostMapping("/UserData/me/playlist/add")
+    @PostMapping(produces = { "application/json" }, value ="/UserData/me/playlist/add")
     public ResponseEntity<?> addMusicToPlaylist(@RequestHeader(required = false)  String Authorization, @RequestParam(required = false) String playlistID ,
                                                 @RequestBody AddTracksRequest body){
         try{
@@ -54,7 +54,7 @@ public class UserDataController {
         }
     }
 
-    @DeleteMapping("/UserData/me/playlist/remove")
+    @DeleteMapping(produces = { "application/json" }, value ="/UserData/me/playlist/remove")
     public ResponseEntity<?> removeMusicInPlaylist(@RequestHeader(required = false)  String Authorization, @RequestParam(required = false) String playlistID ,
                                                 @RequestBody RemoveTracks body){
         try{

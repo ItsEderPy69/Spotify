@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SpotifyDataController {
     @Autowired
     private SpotifyDataService spotifyDataService;
-    @GetMapping("/SpotifyData/search")
+    @GetMapping(produces = { "application/json" }, value ="/SpotifyData/search")
     public ResponseEntity<?> search(@RequestHeader(required = false) String Authorization,
                                     @RequestParam(required = false) String value){
         try{
@@ -26,7 +26,7 @@ public class SpotifyDataController {
             return new ResponseEntity<>(ex.getMessage(),ex.getStatusCode());
         }
     }
-    @GetMapping("/SpotifyData/album")
+    @GetMapping(produces = { "application/json" }, value ="/SpotifyData/album")
     public ResponseEntity<?> getAlbum(@RequestHeader(required = false) String Authorization,
                                     @RequestParam(required = false) String id){
         try{
