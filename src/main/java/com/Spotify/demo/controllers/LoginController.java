@@ -49,7 +49,9 @@ public class LoginController {
     public ResponseEntity<?> SpotifyloginUrl(@RequestHeader String Authorization){
         try {
             Usuario user = tkManager.IsAllowed(Authorization);
-            String rs = spotifyAuth.getAuthUrl(user);
+            //String rs
+            SpotifyAuthManager.SpotifyLogin rs = new SpotifyAuthManager.SpotifyLogin();
+            rs.login_url = spotifyAuth.getAuthUrl(user);
             return new ResponseEntity<>(rs, HttpStatus.OK);
         }catch (SpotifyException ex){
             return new ResponseEntity<>(ex.getMessage(), ex.getStatusCode());

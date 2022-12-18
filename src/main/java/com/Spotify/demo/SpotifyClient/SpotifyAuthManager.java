@@ -162,5 +162,8 @@ public class SpotifyAuthManager {
             throw new RuntimeException(e);
         }
     }
+    public static class SpotifyLogin{
+        public String login_url;
+    }
 
 }
