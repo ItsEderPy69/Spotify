@@ -1,10 +1,10 @@
 package com.Spotify.demo.SpotifyClient;
 
 
-
-
 public class EndPoints {
     public static String BASE_URL = "https://api.spotify.com/v1/";
+
+    public static final String SAVED_TRACKS = "me/tracks?limit=50";
     public static String ME = "me";
     public static String ALBUM = "albums/";
     //public static String PLAYLIST = /*aqui se espera el user ID*/"/playlists";
@@ -23,4 +23,8 @@ public class EndPoints {
     };
 
     public static final String TRACKS =  "/tracks";
+
+    public static final String FOLLOWPLAYLIST(String playlistID){
+        return PLAYLIST() +"/"+ playlistID + "/" + "followers";
+    };
 }

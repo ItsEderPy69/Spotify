@@ -6,10 +6,9 @@ import com.Spotify.demo.SpotifyClient.EndPoints;
 import com.Spotify.demo.SpotifyClient.SpotifyAuthManager;
 
 
-import com.Spotify.demo.model.Spotify.AddTracksRequest;
-import com.Spotify.demo.model.Spotify.CreatePlaylistRequest;
+import com.Spotify.demo.model.Spotify.*;
 
-import com.Spotify.demo.model.Spotify.RemoveTracks;
+import com.Spotify.demo.model.Spotify.Me;
 import com.Spotify.demo.model.Usuario;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -21,6 +20,9 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 import static com.Spotify.demo.Utilities.Funcion.fQuery;
 
@@ -37,7 +39,22 @@ public class SpotifyDataService {
             HttpHeaders headers = auth.getAuth(user);
             HttpEntity<String> entity =  new HttpEntity<>("headers", headers);
             String url = EndPoints.BASE_URL + EndPoints.ME;
-            return (restTemplate.exchange(url, HttpMethod.GET, entity, Object.class)).getBody();
+            ObjectMapper objectMapper = new ObjectMapper();
+            ResponseEntity<String> rs = (restTemplate.exchange(url, HttpMethod.GET, entity, String.class));
+            //objectMapper.readValue()
+            try{
+                String body_Respuesta_spotify = rs.getBody();
+                Me resultado = objectMapper.readValue(body_Respuesta_spotify, Me.class);
+                //resultado = resultado;
+                return resultado;
+            }
+            catch (Exception ex){
+                String mensaje = ex.getMessage();
+                System.out.println(mensaje);
+            }
+
+            //return (restTemplate.exchange(url, HttpMethod.GET, entity, Object.class)).getBody();
+            return rs;
     }
 
     public <T> T getID(@RequestHeader String token, Class<T> classtype) throws SpotifyException {
@@ -61,10 +78,9 @@ public class SpotifyDataService {
 //        ResponseEntity<Object> response = restTemplate.exchange(
 //                EndPoints.SEARCH(fQuery(searchQuery)), HttpMethod.GET, entity,
 //                Object.class);
-
-        ResponseEntity<Object> response = restTemplate.exchange(
+                ResponseEntity<Search> response = restTemplate.exchange(
                 EndPoints.SEARCH(fQuery(searchQuery)), HttpMethod.GET, entity,
-                Object.class);
+                Search.class);
         return response.getBody();
     }
 
@@ -202,6 +218,45 @@ public class SpotifyDataService {
         private String id;
     }
 
+
+    public ResponseEntity<SavedTracks> getUserTracks(String token) throws SpotifyException {
+        Usuario user = tkManager.IsAllowed(token);
+        HttpHeaders headers = auth.getAuth(user);
+
+        HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+
+        String url = EndPoints.BASE_URL + EndPoints.SAVED_TRACKS;
+        ResponseEntity<SavedTracks> response = restTemplate.exchange(url, HttpMethod.GET, entity, SavedTracks.class);
+        return response;
+
+    }
+
+    public ResponseEntity<Object> putFollowPlaylist(String token, String PlaylistID) throws SpotifyException {
+       if (PlaylistID==null || PlaylistID.isEmpty()){
+           throw new SpotifyException("Se requiere un id de playlist", HttpStatus.BAD_REQUEST);
+       }
+
+        Usuario user = tkManager.IsAllowed(token);
+        HttpHeaders headers = auth.getAuth(user);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> entity = new HttpEntity<>("{\"public\":false }", headers);
+
+
+
+        String url = EndPoints.BASE_URL + EndPoints.FOLLOWPLAYLIST(PlaylistID);
+
+
+        try {
+            restTemplate.exchange(url, HttpMethod.PUT, entity, Object.class);
+            ResponseEntity<Object> response = new ResponseEntity("{\"msg\":\"Se siguio la playlist correctamente\"}",HttpStatus.OK);
+            return response;
+
+        }catch (Exception ex){
+            throw new SpotifyException("No se pudo seguir la playlist,\n Detalles:" + ex.getMessage(),HttpStatus.NOT_FOUND);
+        }
+
+    }
 
 }
 

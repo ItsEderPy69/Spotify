@@ -13,8 +13,4 @@ public interface IUsuarioRepository extends MongoRepository<Usuario, String> {
     public Optional<Usuario> findByToken(String token);
     public Optional<Usuario> findByEmail(String email);
     public Optional<Usuario> findByEmailAndPassword(String email, String password);
-
-
-
-
 }

@@ -4,6 +4,7 @@ import com.Spotify.demo.Service.SpotifyDataService;
 import com.Spotify.demo.model.Spotify.AddTracksRequest;
 import com.Spotify.demo.model.Spotify.CreatePlaylistRequest;
 import com.Spotify.demo.model.Spotify.RemoveTracks;
+import com.Spotify.demo.model.Spotify.SavedTracks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -76,4 +77,27 @@ public class UserDataController {
             return new ResponseEntity<>(ex.getMessage(),ex.getStatusCode());
         }
     }
+
+    @GetMapping("/UserData/me/tracks")
+    public ResponseEntity<?> getSavedTracks(@RequestHeader(required = false)  String Authorization){
+        try{
+            ResponseEntity<SavedTracks> rs = spotifyDataService.getUserTracks(Authorization);
+            return new ResponseEntity<>(rs.getBody(), rs.getStatusCode());
+        }
+        catch (SpotifyException ex){
+            return new ResponseEntity<>(ex.getMessage(),ex.getStatusCode());
+        }
+    }
+
+    @PutMapping(produces = { "application/json" }, value ="/UserData/me/playlist/follow")
+    public ResponseEntity<?> putFollowPlaylist(@RequestHeader(required = false)  String Authorization,  @RequestParam(required = false) String PlaylistID){
+        try{
+            ResponseEntity<Object> rs = spotifyDataService.putFollowPlaylist(Authorization, PlaylistID);
+            return new ResponseEntity<>(rs.getBody(), rs.getStatusCode());
+        }
+        catch (SpotifyException ex){
+            return new ResponseEntity<>(ex.getMessage(),ex.getStatusCode());
+        }
+    }
+
 }
