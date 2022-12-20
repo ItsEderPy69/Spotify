@@ -2,6 +2,7 @@ package com.Spotify.demo.controllers;
 
 import com.Spotify.demo.Exception.SpotifyException;
 import com.Spotify.demo.Service.SpotifyDataService;
+import com.Spotify.demo.model.Spotify.getGenres;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,18 @@ public class SpotifyDataController {
         try{
             ResponseEntity<Object> rs = spotifyDataService.getAlbum(Authorization, id);
             return new ResponseEntity<>(rs.getBody(), rs.getStatusCode());
+        }
+        catch (SpotifyException ex){
+            return new ResponseEntity<>(ex.getMessage(),ex.getStatusCode());
+        }
+    }
+
+
+    @GetMapping(produces = { "application/json" }, value ="/SpotifyData/GetGenres")
+    public ResponseEntity<?> getGenres(@RequestHeader(required = false) String Authorization){
+        try{
+            ResponseEntity<getGenres> rs = spotifyDataService.getGenres(Authorization);
+            return new ResponseEntity<>(spotifyDataService.getGenres(Authorization), HttpStatus.OK);
         }
         catch (SpotifyException ex){
             return new ResponseEntity<>(ex.getMessage(),ex.getStatusCode());

@@ -21,9 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-
 import static com.Spotify.demo.Utilities.Funcion.fQuery;
 
 @Service
@@ -235,28 +232,34 @@ public class SpotifyDataService {
        if (PlaylistID==null || PlaylistID.isEmpty()){
            throw new SpotifyException("Se requiere un id de playlist", HttpStatus.BAD_REQUEST);
        }
-
         Usuario user = tkManager.IsAllowed(token);
         HttpHeaders headers = auth.getAuth(user);
         headers.setContentType(MediaType.APPLICATION_JSON);
-
         HttpEntity<String> entity = new HttpEntity<>("{\"public\":false }", headers);
-
-
-
         String url = EndPoints.BASE_URL + EndPoints.FOLLOWPLAYLIST(PlaylistID);
-
-
         try {
             restTemplate.exchange(url, HttpMethod.PUT, entity, Object.class);
             ResponseEntity<Object> response = new ResponseEntity("{\"msg\":\"Se siguio la playlist correctamente\"}",HttpStatus.OK);
             return response;
-
         }catch (Exception ex){
             throw new SpotifyException("No se pudo seguir la playlist,\n Detalles:" + ex.getMessage(),HttpStatus.NOT_FOUND);
         }
-
     }
+
+    public ResponseEntity<getGenres> getGenres(String token) throws SpotifyException {
+        Usuario user = tkManager.IsAllowed(token);
+        HttpHeaders headers = auth.getAuth(user);
+        HttpEntity entity = new HttpEntity<>("headers", headers);
+        String url = EndPoints.GENRES;
+        ResponseEntity<getGenres> response;
+        response = restTemplate.exchange(url, HttpMethod.GET, entity, getGenres.class);
+        return response;
+    }
+
+
+
+
+
 
 }
 

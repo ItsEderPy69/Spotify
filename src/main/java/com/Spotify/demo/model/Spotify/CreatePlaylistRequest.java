@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
+
 @Setter
 @Getter
 @AllArgsConstructor
@@ -14,4 +16,5 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class CreatePlaylistRequest {
     private String name;
     private String description;
+
 }

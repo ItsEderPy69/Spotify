@@ -27,4 +27,7 @@ public class EndPoints {
     public static final String FOLLOWPLAYLIST(String playlistID){
         return PLAYLIST() +"/"+ playlistID + "/" + "followers";
     };
+
+    public static String GENRES = "https://api.spotify.com/v1/recommendations/available-genre-seeds";
+
 }
