@@ -256,7 +256,24 @@ public class SpotifyDataService {
         return response;
     }
 
-
+    public ResponseEntity<getPlaylistImage> getPlaylistImage(String token, String PlaylistID) throws SpotifyException {
+        if (PlaylistID==null || PlaylistID.isEmpty()){
+            throw new SpotifyException("Se requiere un id de playlist", HttpStatus.BAD_REQUEST);
+        }
+        Usuario user = tkManager.IsAllowed(token);
+        HttpHeaders headers = auth.getAuth(user);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>("{\"public\":false }", headers);
+        String url = EndPoints.BASE_URL + EndPoints.PLAYLISTIMAGE(PlaylistID);
+        try {
+            restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
+            ResponseEntity<getPlaylistImage> response;
+            response = restTemplate.exchange(url, HttpMethod.GET, entity, getPlaylistImage.class);
+            return response;
+        }catch (Exception ex){
+            throw new SpotifyException("No se pudo traer la imagen,\n Detalles:" + ex.getMessage(),HttpStatus.NOT_FOUND);
+        }
+    }
 
 
 

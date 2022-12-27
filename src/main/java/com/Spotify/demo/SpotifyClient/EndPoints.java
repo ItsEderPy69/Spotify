@@ -30,4 +30,7 @@ public class EndPoints {
 
     public static String GENRES = "https://api.spotify.com/v1/recommendations/available-genre-seeds";
 
+    public static final String PLAYLISTIMAGE(String playlistID){
+        return PLAYLIST() +"/"+ playlistID + "/" + "images";
+    };
 }
