@@ -100,5 +100,15 @@ public class UserDataController {
         }
     }
 
+    @GetMapping("/UserData/me/playlist/Image")
+    public ResponseEntity<?> getPlaylistsImage(@RequestHeader(required = false)  String Authorization){
+        try{
+            ResponseEntity<Object> rs = spotifyDataService.getUsersPlaylist(Authorization);
+            return new ResponseEntity<>(rs.getBody(), rs.getStatusCode());
+        }
+        catch (SpotifyException ex){
+            return new ResponseEntity<>(ex.getMessage(),ex.getStatusCode());
+        }
+    }
 
 }
