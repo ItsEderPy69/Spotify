@@ -19,18 +19,21 @@ public class EndPoints {
     };
 
     public static final String PLAYLIST(){
-        return "playlists";
+        return "playlists/";
     };
 
     public static final String TRACKS =  "/tracks";
 
     public static final String FOLLOWPLAYLIST(String playlistID){
-        return PLAYLIST() +"/"+ playlistID + "/" + "followers";
+        return PLAYLIST() + playlistID + "/" + "followers";
     };
 
     public static String GENRES = "https://api.spotify.com/v1/recommendations/available-genre-seeds";
 
     public static final String PLAYLISTIMAGE(String playlistID){
-        return PLAYLIST() +"/"+ playlistID + "/" + "images";
+        return PLAYLIST() + playlistID + "/images";
     };
+
+    public static String MEPLAYER = "/me/player";
+
 }

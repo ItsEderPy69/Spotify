@@ -1,10 +1,7 @@
 package com.Spotify.demo.controllers;
 import com.Spotify.demo.Exception.SpotifyException;
 import com.Spotify.demo.Service.SpotifyDataService;
-import com.Spotify.demo.model.Spotify.AddTracksRequest;
-import com.Spotify.demo.model.Spotify.CreatePlaylistRequest;
-import com.Spotify.demo.model.Spotify.RemoveTracks;
-import com.Spotify.demo.model.Spotify.SavedTracks;
+import com.Spotify.demo.model.Spotify.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -100,8 +97,19 @@ public class UserDataController {
         }
     }
 
-    @GetMapping("/UserData/me/playlist/Image")
-    public ResponseEntity<?> getPlaylistsImage(@RequestHeader(required = false)  String Authorization){
+    @GetMapping("/UserData/me/playlists/image")
+    public ResponseEntity<?> getPlaylistsImage(@RequestHeader(required = false)  String Authorization,  @RequestParam(required = false) String PlaylistID){
+        try{
+            ResponseEntity<getPlaylistImage> rs = spotifyDataService.getPlaylistImage(Authorization, PlaylistID);
+            return new ResponseEntity<>(rs.getBody(), rs.getStatusCode());
+        }
+        catch (SpotifyException ex){
+            return new ResponseEntity<>(ex.getMessage(),ex.getStatusCode());
+        }
+    }
+
+    @GetMapping("/UserData/me/player")
+    public ResponseEntity<?> getPlayer(@RequestHeader(required = false)  String Authorization){
         try{
             ResponseEntity<Object> rs = spotifyDataService.getUsersPlaylist(Authorization);
             return new ResponseEntity<>(rs.getBody(), rs.getStatusCode());
