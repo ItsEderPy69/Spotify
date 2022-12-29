@@ -43,8 +43,56 @@ public class SpotifyDataController {
     @GetMapping(produces = { "application/json" }, value ="/SpotifyData/GetGenres")
     public ResponseEntity<?> getGenres(@RequestHeader(required = false) String Authorization){
         try{
-            ResponseEntity<getGenres> rs = spotifyDataService.getGenres(Authorization);
-            return new ResponseEntity<>(spotifyDataService.getGenres(Authorization), HttpStatus.OK);
+            //ResponseEntity<getGenres> rs = spotifyDataService.getGenres(Authorization);
+            return new ResponseEntity<>(spotifyDataService.getGenres(Authorization).getBody(), HttpStatus.OK);
+        }
+        catch (SpotifyException ex){
+            return new ResponseEntity<>(ex.getMessage(),ex.getStatusCode());
+        }
+    }
+
+    @GetMapping(produces = { "application/json" }, value ="/SpotifyData/artist")
+    public ResponseEntity<?> getArtist(@RequestHeader(required = false) String Authorization, @RequestParam String artistID){
+        try{
+            ResponseEntity<Object> rs = spotifyDataService.getArtist(Authorization,artistID);
+
+            return new ResponseEntity<>(rs.getBody(), HttpStatus.OK);
+        }
+        catch (SpotifyException ex){
+            return new ResponseEntity<>(ex.getMessage(),ex.getStatusCode());
+        }
+    }
+
+    @GetMapping(produces = { "application/json" }, value ="/SpotifyData/artist/top-tracks")
+    public ResponseEntity<?> getArtistTopTracks(@RequestHeader(required = false) String Authorization, @RequestParam String artistID){
+        try{
+            ResponseEntity<Object> rs = spotifyDataService.getArtistTopTracks(Authorization,artistID);
+
+            return new ResponseEntity<>(rs.getBody(), HttpStatus.OK);
+        }
+        catch (SpotifyException ex){
+            return new ResponseEntity<>(ex.getMessage(),ex.getStatusCode());
+        }
+    }
+
+    @GetMapping(produces = { "application/json" }, value ="/SpotifyData/artist/related")
+    public ResponseEntity<?> getArtistRelated(@RequestHeader(required = false) String Authorization, @RequestParam String artistID){
+        try{
+            ResponseEntity<Object> rs = spotifyDataService.getArtistRelated(Authorization,artistID);
+
+            return new ResponseEntity<>(rs.getBody(), HttpStatus.OK);
+        }
+        catch (SpotifyException ex){
+            return new ResponseEntity<>(ex.getMessage(),ex.getStatusCode());
+        }
+    }
+
+    @GetMapping(produces = { "application/json" }, value ="/SpotifyData/artist/albums")
+    public ResponseEntity<?> getArtistAlbums(@RequestHeader(required = false) String Authorization, @RequestParam String artistID){
+        try{
+            ResponseEntity<Object> rs = spotifyDataService.getArtistRelated(Authorization,artistID);
+
+            return new ResponseEntity<>(rs.getBody(), HttpStatus.OK);
         }
         catch (SpotifyException ex){
             return new ResponseEntity<>(ex.getMessage(),ex.getStatusCode());

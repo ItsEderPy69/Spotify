@@ -7,6 +7,7 @@ public class EndPoints {
     public static final String SAVED_TRACKS = "me/tracks?limit=50";
     public static String ME = "me";
     public static String ALBUM = "albums/";
+    public static String ARTIST = "artists/";
     //public static String PLAYLIST = /*aqui se espera el user ID*/"/playlists";
     public static final String ALBUM_GUARDADOS = "me/albums?limit=50";
 

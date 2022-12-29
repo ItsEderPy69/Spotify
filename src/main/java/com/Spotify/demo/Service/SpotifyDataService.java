@@ -101,6 +101,85 @@ public class SpotifyDataService {
         return response;
     }
 
+    public ResponseEntity<Object>  getArtist(String token, String artistID) throws SpotifyException {
+
+        Usuario user = tkManager.IsAllowed(token);
+        if(artistID == null|| artistID.isEmpty()){
+            throw new SpotifyException("El id del artista no puede estar vacio", HttpStatus.BAD_REQUEST);
+        }
+        HttpHeaders headers = auth.getAuth(user);
+        HttpEntity<String> entity = new HttpEntity<>("headers", headers);
+        String url = EndPoints.BASE_URL + EndPoints.ARTIST + artistID;
+        ResponseEntity<Object> response;
+        try {
+            response = restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
+        }catch (Exception ex){
+            //response = new ResponseEntity<Object>("No se pudo encontrar el album,\n Detalles:" + ex.getMessage(),HttpStatus.NOT_FOUND);
+            throw new SpotifyException("No se pudo encontrar el artista,\n Detalles:" + ex.getMessage(),HttpStatus.NOT_FOUND);
+        }
+
+        return response;
+    }
+    public ResponseEntity<Object>  getArtistTopTracks(String token, String artistID) throws SpotifyException {
+
+        Usuario user = tkManager.IsAllowed(token);
+        if(artistID == null|| artistID.isEmpty()){
+            throw new SpotifyException("El id del artista no puede estar vacio", HttpStatus.BAD_REQUEST);
+        }
+        HttpHeaders headers = auth.getAuth(user);
+        HttpEntity<String> entity = new HttpEntity<>("headers", headers);
+        String url = EndPoints.BASE_URL + EndPoints.ARTIST + artistID + "/top-tracks?country=PY";
+        ResponseEntity<Object> response;
+        try {
+            response = restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
+        }catch (Exception ex){
+            //response = new ResponseEntity<Object>("No se pudo encontrar el album,\n Detalles:" + ex.getMessage(),HttpStatus.NOT_FOUND);
+            throw new SpotifyException("No se pudo encontrar el artista,\n Detalles:" + ex.getMessage(),HttpStatus.NOT_FOUND);
+        }
+
+        return response;
+    }
+
+    public ResponseEntity<Object>  getArtistRelated(String token, String artistID) throws SpotifyException {
+
+        Usuario user = tkManager.IsAllowed(token);
+        if(artistID == null|| artistID.isEmpty()){
+            throw new SpotifyException("El id del artista no puede estar vacio", HttpStatus.BAD_REQUEST);
+        }
+        HttpHeaders headers = auth.getAuth(user);
+        HttpEntity<String> entity = new HttpEntity<>("headers", headers);
+        String url = EndPoints.BASE_URL + EndPoints.ARTIST + artistID + "/related-artists";
+        ResponseEntity<Object> response;
+        try {
+            response = restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
+        }catch (Exception ex){
+            //response = new ResponseEntity<Object>("No se pudo encontrar el album,\n Detalles:" + ex.getMessage(),HttpStatus.NOT_FOUND);
+            throw new SpotifyException("No se pudo encontrar el artista,\n Detalles:" + ex.getMessage(),HttpStatus.NOT_FOUND);
+        }
+
+        return response;
+    }
+
+    public ResponseEntity<Object>  getArtistAlbums(String token, String artistID) throws SpotifyException {
+
+        Usuario user = tkManager.IsAllowed(token);
+        if(artistID == null|| artistID.isEmpty()){
+            throw new SpotifyException("El id del artista no puede estar vacio", HttpStatus.BAD_REQUEST);
+        }
+        HttpHeaders headers = auth.getAuth(user);
+        HttpEntity<String> entity = new HttpEntity<>("headers", headers);
+        String url = EndPoints.BASE_URL + EndPoints.ARTIST + artistID + "/albums";
+        ResponseEntity<Object> response;
+        try {
+            response = restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
+        }catch (Exception ex){
+            //response = new ResponseEntity<Object>("No se pudo encontrar el album,\n Detalles:" + ex.getMessage(),HttpStatus.NOT_FOUND);
+            throw new SpotifyException("No se pudo encontrar el artista,\n Detalles:" + ex.getMessage(),HttpStatus.NOT_FOUND);
+        }
+
+        return response;
+    }
+
     public ResponseEntity<Object>  getAlbumGuardados(String token) throws SpotifyException {
 
         Usuario user = tkManager.IsAllowed(token);
@@ -175,8 +254,18 @@ public class SpotifyDataService {
         return response;
     }
 
-    public ResponseEntity<Object> createPlaylist(String token, CreatePlaylistRequest body) throws SpotifyException {
+    public ResponseEntity<Object> getSavedArtist(String token) throws SpotifyException {
 
+        Usuario user = tkManager.IsAllowed(token);
+        HttpHeaders headers = auth.getAuth(user);
+        HttpEntity entity = new HttpEntity<>("headers", headers);
+        String url = EndPoints.BASE_URL + EndPoints.ME + "/following/?type=artist";
+        ResponseEntity<Object> response;
+        response = restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
+        return response;
+    }
+
+    public ResponseEntity<Object> createPlaylist(String token, CreatePlaylistRequest body) throws SpotifyException {
         Usuario user = tkManager.IsAllowed(token);
         if(body.getName() == null|| body.getName().isEmpty()){
             throw new SpotifyException("El atributo name no puede estar vacio", HttpStatus.BAD_REQUEST);
@@ -199,6 +288,40 @@ public class SpotifyDataService {
         }catch (Exception ex){
             //response = new ResponseEntity<Object>("No se crear la playlist,\n Detalles:" + ex.getMessage(),HttpStatus.NOT_FOUND);
             throw new SpotifyException("No se pudo crear la playlist,\n Detalles:" + ex.getMessage(),HttpStatus.NOT_FOUND);
+        }
+
+        return response;
+    }
+
+    public ResponseEntity<Object> updatePlaylist(String token, CreatePlaylistRequest body,String playlistID) throws SpotifyException {
+
+        Usuario user = tkManager.IsAllowed(token);
+        if(body.getName() == null|| body.getName().isEmpty()){
+            throw new SpotifyException("El atributo name no puede estar vacio", HttpStatus.BAD_REQUEST);
+        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        HttpHeaders headers = auth.getAuth(user);
+        HttpEntity<String> entity;
+        String _body = "";
+        try {
+            _body =objectMapper.writeValueAsString(body);
+        }catch (Exception ex){
+
+        }
+        entity = new HttpEntity<>(_body, headers);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        String url = EndPoints.BASE_URL + EndPoints.PLAYLIST() + playlistID;
+        ResponseEntity<Object> response;
+        try {
+            response = restTemplate.exchange(url, HttpMethod.PUT, entity, Object.class);
+            if(response.getStatusCode() == HttpStatus.OK){
+                return new ResponseEntity<>("{\n" +
+                        "\t\"mensaje\":\"Actualizado Correctamente\"\n" +
+                        "}", HttpStatus.OK);
+            }
+        }catch (Exception ex){
+            //response = new ResponseEntity<Object>("No se crear la playlist,\n Detalles:" + ex.getMessage(),HttpStatus.NOT_FOUND);
+            throw new SpotifyException("No se pudo actualizar la playlist,\n Detalles:" + ex.getMessage(),HttpStatus.NOT_FOUND);
         }
 
         return response;
@@ -228,6 +351,8 @@ public class SpotifyDataService {
 
     }
 
+
+
     public ResponseEntity<Object> putFollowPlaylist(String token, String PlaylistID) throws SpotifyException {
        if (PlaylistID==null || PlaylistID.isEmpty()){
            throw new SpotifyException("Se requiere un id de playlist", HttpStatus.BAD_REQUEST);
@@ -256,7 +381,17 @@ public class SpotifyDataService {
         return response;
     }
 
-    public ResponseEntity<getPlaylistImage> getPlaylistImage(String token, String PlaylistID) throws SpotifyException {
+    public ResponseEntity<getGenres> get(String token) throws SpotifyException {
+        Usuario user = tkManager.IsAllowed(token);
+        HttpHeaders headers = auth.getAuth(user);
+        HttpEntity entity = new HttpEntity<>("headers", headers);
+        String url = EndPoints.GENRES;
+        ResponseEntity<getGenres> response;
+        response = restTemplate.exchange(url, HttpMethod.GET, entity, getGenres.class);
+        return response;
+    }
+
+    public ResponseEntity<getPlaylistImage[]> getPlaylistImage(String token, String PlaylistID) throws SpotifyException {
         if (PlaylistID==null || PlaylistID.isEmpty()){
             throw new SpotifyException("Se requiere un id de playlist", HttpStatus.BAD_REQUEST);
         }
@@ -267,8 +402,8 @@ public class SpotifyDataService {
         String url = EndPoints.BASE_URL + EndPoints.PLAYLISTIMAGE(PlaylistID);
         try {
             restTemplate.exchange(url, HttpMethod.GET, entity, Object.class);
-            ResponseEntity<getPlaylistImage> response;
-            response = restTemplate.exchange(url, HttpMethod.GET, entity, getPlaylistImage.class);
+            ResponseEntity<getPlaylistImage[]> response;
+            response = restTemplate.exchange(url, HttpMethod.GET, entity, getPlaylistImage[].class);
             return response;
         }catch (Exception ex){
             throw new SpotifyException("No se pudo traer la imagen,\n Detalles:" + ex.getMessage(),HttpStatus.NOT_FOUND);
